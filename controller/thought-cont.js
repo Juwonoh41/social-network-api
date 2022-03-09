@@ -87,6 +87,41 @@ const thoughtsCont = {
             res.status(500).json(err);
           });
       },
+      addReaction(req, res) {
+        Thoughts.findOneAndUpdate(
+          { _id: req.params.thoughtId },
+          { $addToSet: { reactions: req.body } },
+          { runValidators: true, new: true }
+        )
+          .then((dbThought) => {
+            if (!dbThought) {
+              return res.status(404).json({ message: 'Wrong Id' });
+            }
+            res.json(dbThought);
+          })
+          .catch((err) => {
+            console.log(err);
+            res.status(500).json(err);
+          });
+      },
+      // remove reaction from a thought
+      removeReaction(req, res) {
+        Thoughts.findOneAndUpdate(
+          { _id: req.params.thoughtId },
+          { $pull: { reactions: { reactionId: req.params.reactionId } } },
+          { runValidators: true, new: true }
+        )
+          .then((dbThought) => {
+            if (!dbThought) {
+              return res.status(404).json({ message: 'Wrong Id' });
+            }
+            res.json(dbThought);
+          })
+          .catch((err) => {
+            console.log(err);
+            res.status(500).json(err);
+          });
+      },
     
 }
 
