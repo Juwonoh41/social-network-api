@@ -27,3 +27,7 @@
 https://www.screencast.com/t/3LnR8nYk
 
 #####Thoughts
+--Get and Create
+https://www.screencast.com/t/MDvkEP1jVg
+
+--Delete

@@ -48,6 +48,46 @@ const thoughtsCont = {
             res.status(500).json(err);
           });
       },
+      updateThought(req, res) {
+        Thoughts.findOneAndUpdate({ _id: req.params.thoughtId }, { $set: req.body }, { runValidators: true, new: true })
+          .then((dbThought) => {
+            if (!dbThought) {
+              return res.status(404).json({ message: 'Wrong id' });
+            }
+            res.json(dbThought);
+          })
+          .catch((err) => {
+            console.log(err);
+            res.status(500).json(err);
+          });
+      },
+      // delete thought
+      deleteThought(req, res) {
+        Thoughts.findOneAndRemove({ _id: req.params.thoughtId })
+          .then((dbThought) => {
+            if (!dbThought) {
+              return res.status(404).json({ message: 'Wrong Id' });
+            }
+    
+            // remove thought id from user's `thoughts` field
+            return Users.findOneAndUpdate(
+              { thoughts: req.params.thoughtId },
+              { $pull: { thoughts: req.params.thoughtId } },
+              { new: true }
+            );
+          })
+          .then((dbUser) => {
+            if (!dbUser) {
+              return res.status(404).json({ message: 'Wrong id' });
+            }
+            res.json({ message: 'Deleted!' });
+          })
+          .catch((err) => {
+            console.log(err);
+            res.status(500).json(err);
+          });
+      },
+    
 }
 
 module.exports = thoughtsCont;
