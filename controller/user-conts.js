@@ -4,8 +4,8 @@ const uCont = {
     getUsers(req, res) {
         Users.find()
           .select('-__v')
-          .then((dbUserData) => {
-            res.json(dbUserData);
+          .then((dbUser) => {
+            res.json(dbUser);
           })
           .catch((err) => {
             console.log(err);
@@ -14,11 +14,11 @@ const uCont = {
       },
 
     getSingleUser(req, res) {
-        Users.findOne({ _id: req.params.userId })
+        Users.findOne({ _id: req.params.id })
           .select('-__v')
           .populate('friends')
           .populate('thoughts')
-          .then((dbUser) => {
+          .then((dbUser)=>{
             if (!dbUser) {
               return res.status(404).json({ message: 'Wrong id' });
             }
@@ -29,4 +29,16 @@ const uCont = {
             res.status(500).json(err);
           });
       },
+    createUser(req, res) {
+        Users.create(req.body)
+          .then((dbUser) => {
+            res.json(dbUser);
+          })
+          .catch((err) => {
+            console.log(err);
+            res.status(500).json(err);
+          });
+      },
 }
+
+module.exports = uCont
